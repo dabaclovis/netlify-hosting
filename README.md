@@ -27,6 +27,19 @@ The root `index.html` is a build template, not a directly viewable page. Literal
 
 Rebuild and redeploy whenever articles change. Production hosting should serve HTTPS. The bundled server is for local previews and binds only to your own computer.
 
+### Netlify deployment from GitHub
+
+Prepared target: [dabaclovis/netlify-hosting](https://github.com/dabaclovis/netlify-hosting), production branch **master**, domain **https://articles.brotherfall.com**.
+
+1. Put this project's source files at the repository root on `master`. Upload/commit all required source files, including `articles.json`, `category.json`, `site.json`, templates, images, JavaScript, package metadata, tests, agent files, and `netlify.toml`. Do not commit `dist`, credentials, or dependencies. This preparation does not initialize Git or push anything.
+2. In Netlify, import an existing project from GitHub, grant access to that repository, and select `master` as the production branch. Leave the base directory at the repository root.
+3. [netlify.toml](netlify.toml) specifies Node.js 22, build command `npm test && npm run build`, and publish directory `dist`. Netlify serves the generated static site; do not run `server.js` in production. The build copies image assets using platform-native paths so it works on Netlify's Linux runners.
+4. Add `articles.brotherfall.com` in Netlify's domain settings. Follow Netlify's displayed DNS instructions at your DNS provider and wait for HTTPS provisioning. `site.json` already uses this HTTPS domain for canonical URLs, structured data, robots, and sitemap.
+5. Enable automatic production builds for pushes to `master`. Test the first deployment, `/categories.html`, an article URL such as `/articles/sample-article/`, `/sitemap.xml`, and an unknown URL (which should return the custom 404).
+6. Once connected, each successful article push triggers Netlify to test, build, and publish the updated articles and sitemap. Failed builds do not publish the new article; inspect Netlify's deploy logs.
+
+For agent publishing, separately configure this local folder as the repository checkout, authenticate Git, set `origin` to the exact repository above, and check out `master`. Begin from a clean checkout synchronized with `origin/master`. Initial repository setup and first push are manual prerequisites, not actions performed by the article agent.
+
 ## Add articles
 
 Keep [articles.json](articles.json) as a JSON array. The existing sample is preserved. Each article uses:
@@ -76,6 +89,6 @@ npm run build
 
 The [Article Writer policy](article.agent.md) defines original, source-verified, SEO-friendly writing in any suitable category, using the author name `knowledge blog`. The [VS Code discovery file](.github/agents/article.agent.md) makes it available as **Article Writer** in the chat agent picker.
 
-Select the agent and ask it to follow the daily editorial workflow. It preserves existing articles, checks for a same-day post, appends one new article, validates the collection, and rebuilds the site.
+Select the agent and ask it to follow the daily editorial and authorized GitHub publishing workflows. It checks repository prerequisites, preserves existing articles, checks for a same-day post, appends one new article, validates the collection, rebuilds the site, and commits/pushes only `articles.json` to the configured `master` branch. The root policy permits this scoped future publishing; no push is performed by preparing these files. A successful push triggers deployment only after Netlify is connected, and is not proof the article is live.
 
 The policy includes Windows Task Scheduler instructions for a proposed daily **06:30 AM local-time** run. **No automatic job is installed or enabled.** Unattended operation requires a separately authenticated, tested AI CLI with web access and appropriate permissions; the agent file itself is not a scheduler. Confirm the desired timezone and frequency before enabling a real task.

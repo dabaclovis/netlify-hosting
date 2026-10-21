@@ -1,0 +1,9 @@
+[build]
+  command = "npm test && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Generated article directories have their own index.html.
+# Do not add a single-page-app catch-all redirect.

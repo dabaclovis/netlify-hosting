@@ -139,7 +139,7 @@ export async function build(output = path.join(root, 'dist')) {
   await writeFile(path.join(output, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`);
   const searchData = articles.map(({ slug, title, summary, category, author, tags, seo, content }) => ({ slug, title, summary, category, author, tags, seo, content }));
   await writeFile(path.join(output, 'main.js'), `const articles = ${jsonForHtml(searchData)};\n${script}`);
-  await Promise.all(['style.css', 'images\\favicon.svg', 'images\\journal-art.svg'].map((file) => copyFile(path.join(root, file), path.join(output, file))));
+  await Promise.all([['style.css'], ['images', 'favicon.svg'], ['images', 'journal-art.svg']].map((parts) => copyFile(path.join(root, ...parts), path.join(output, ...parts))));
   return { articles: articles.length, output };
 }
 
