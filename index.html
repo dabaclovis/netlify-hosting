@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="{{language}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <meta name="keywords" content="{{keywords}}">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#f6f5ef">
+  <link rel="canonical" href="{{canonical}}">
+  <meta property="og:type" content="{{ogType}}">
+  <meta property="og:site_name" content="{{siteName}}">
+  <meta property="og:title" content="{{title}}">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:url" content="{{canonical}}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{title}}">
+  <meta name="twitter:description" content="{{description}}">
+  {{articleMeta}}
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+  <script type="application/ld+json">{{structuredData}}</script>
+  <script src="/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header wrap">
+    <a class="brand" href="/" aria-label="{{siteName}} home"><img class="brand-icon" src="/images/favicon.svg" alt="" width="40" height="40">{{siteName}}<span class="brand-dot">.</span></a>
+    <nav aria-label="Main navigation">
+      <a href="/#journal" {{journalCurrent}}>The journal</a>
+      <a href="/categories.html" {{categoriesCurrent}}>Categories</a>
+      <a href="/about.html" {{aboutCurrent}}>About</a>
+      <a class="nav-contact" href="/contact.html" {{contactCurrent}}>Get in touch <span aria-hidden="true">&#8599;</span></a>
+    </nav>
+  </header>
+  <main id="main">{{content}}</main>
+  <footer class="site-footer wrap">
+    <div><a class="footer-brand" href="/"><img src="/images/favicon.svg" alt="" width="28" height="28">{{siteName}}.</a><p>A little curiosity goes a long way.</p></div>
+    <div class="footer-links"><a href="/categories.html">Categories</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/sitemap.xml">Sitemap <span aria-hidden="true">&#8599;</span></a></div>
+    <p class="copyright">&copy; {{year}} {{siteName}}. Made for curious minds.</p>
+  </footer>
+</body>
+</html>
