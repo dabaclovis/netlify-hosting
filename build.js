@@ -60,8 +60,8 @@ const card = (article, index) => `<article class="article-card" data-article="${
 </article>`;
 
 export async function build(output = path.join(root, 'dist')) {
-  const [rawArticles, rawSite, template, about, contact, script, rawCategories] = await Promise.all(
-    ['articles.json', 'site.json', 'index.html', 'about.html', 'contact.html', 'main.js', 'category.json'].map((file) => readFile(path.join(root, file), 'utf8'))
+  const [rawArticles, rawSite, template, about, contact, script, rawCategories, focus] = await Promise.all(
+    ['articles.json', 'site.json', 'index.html', 'about.html', 'contact.html', 'main.js', 'category.json', 'focus.html'].map((file) => readFile(path.join(root, file), 'utf8'))
   );
   const articles = normalizeArticles(JSON.parse(rawArticles));
   const site = validateSite(JSON.parse(rawSite));
@@ -78,6 +78,7 @@ export async function build(output = path.join(root, 'dist')) {
     categoriesCurrent: section === 'categories' ? 'aria-current="page"' : '',
     aboutCurrent: section === 'about' ? 'aria-current="page"' : '',
     contactCurrent: section === 'contact' ? 'aria-current="page"' : '',
+    focusCurrent: section === 'focus' ? 'aria-current="page"' : '',
     articleMeta: article ? `<meta name="author" content="${escapeHtml(article.author)}"><meta property="article:published_time" content="${article.date}T00:00:00Z"><meta property="article:section" content="${escapeHtml(article.category)}">${article.tags.map((tag) => `<meta property="article:tag" content="${escapeHtml(tag)}">`).join('')}` : '',
     structuredData: jsonForHtml(article ? {
       '@context': 'https://schema.org', '@type': 'BlogPosting', headline: article.title,
@@ -102,6 +103,7 @@ export async function build(output = path.join(root, 'dist')) {
     <div class="empty-state" id="empty-state" ${articles.length ? 'hidden' : ''}><span aria-hidden="true">&#10035;</span><h3>${articles.length ? 'No stories found' : 'A new chapter is on its way'}</h3><p>${articles.length ? 'Try another keyword or explore all stories.' : 'Check back soon for the first story.'}</p><button class="button" id="clear-search" type="button" ${articles.length ? '' : 'hidden'}>Clear filters</button></div>
     <noscript><p class="notice">All stories are shown. Enable JavaScript to search and filter the journal.</p></noscript>
   </section>
+  <section class="closing-note wrap"><span aria-hidden="true">&#9719;</span><div><p class="eyebrow">A FREE TOOL FOR YOUR DAY</p><h2>Make room for a little focus.</h2><p>Read, study, or write with our simple focus timer. No account needed.</p></div><a href="/focus.html">Try the focus timer <span aria-hidden="true">&#8599;</span></a></section>
   <section class="closing-note wrap"><span aria-hidden="true">&#10035;</span><div><p class="eyebrow">STAY A LITTLE CURIOUS</p><h2>There's always another story.</h2><p>Come back for fresh ideas and a different point of view.</p></div><a href="/about.html">A little about this journal <span aria-hidden="true">&#8599;</span></a></section>`;
 
   const categoryPage = `<section class="category-intro wrap"><p class="eyebrow">FOLLOW YOUR CURIOSITY</p><h1>Explore by <em>category.</em></h1><p>From politics and health to technology and education, find your next great read.</p></section>
@@ -125,7 +127,8 @@ export async function build(output = path.join(root, 'dist')) {
   await writeFile(path.join(output, 'index.html'), page({ title: `${site.name} - Ideas, stories & discoveries`, content: home, section: 'journal', keywords: [...new Set(articles.flatMap((article) => [...article.tags, article.category, article.seo]))].filter(Boolean).join(', ') }));
   await writeFile(path.join(output, 'categories.html'), page({ title: `Categories | ${site.name}`, description: 'Browse articles by category, from politics and health to technology, education, and more. Search for topics and discover your next read.', route: '/categories.html', section: 'categories', content: categoryPage, keywords: categories.join(', ') }));
   await writeFile(path.join(output, 'about.html'), page({ title: `About | ${site.name}`, route: '/about.html', section: 'about', content: fill(about, { about: escapeHtml(site.about) }) }));
-  await writeFile(path.join(output, 'contact.html'), page({ title: `Contact | ${site.name}`, route: '/contact.html', section: 'contact', content: fill(contact, { contactDetails: site.email ? `<a class="button" href="mailto:${escapeHtml(site.email)}">Say hello <span aria-hidden="true">&#8599;</span></a><p>${escapeHtml(site.email)}</p>` : '<p class="notice">Email contact is not available yet. In the meantime, explore the latest stories in the journal.</p><a class="button" href="/#journal">Back to the journal <span aria-hidden="true">&#8599;</span></a>' }) }));
+  await writeFile(path.join(output, 'contact.html'), page({ title: `Contact | ${site.name}`, route: '/contact.html', section: 'contact', content: contact }));
+  await writeFile(path.join(output, 'focus.html'), page({ title: `Free Focus Timer | ${site.name}`, description: 'A free, private focus timer for studying, reading, and writing. Customize focus and break sessions without accounts, ads, or downloads.', route: '/focus.html', section: 'focus', content: focus, keywords: 'focus timer, study timer, work break timer' }));
   for (const article of articles) {
     const related = articles.filter((other) => other.slug !== article.slug).sort((a, b) => Number(b.category === article.category) - Number(a.category === article.category)).slice(0, 3);
     const content = `<article class="article-page wrap narrow"><a class="back-link" href="/#journal">&#8592; All stories</a><header><p class="eyebrow">${escapeHtml(article.category)}</p><h1>${escapeHtml(article.title)}</h1><p class="article-deck">${escapeHtml(article.summary)}</p><div class="article-meta">${metaLine(article)}</div></header><div class="article-content">${article.content.split(/\r?\n\s*\r?\n/).map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\r?\n/g, '<br>')}</p>`).join('')}</div><footer class="article-end"><div class="tags">${article.tags.map((tag) => `<a href="/?q=${encodeURIComponent(tag)}#journal">#${escapeHtml(tag)}</a>`).join('')}</div><a href="/#journal">Back to the journal &#8599;</a></footer></article>${related.length ? `<section class="related wrap"><p class="eyebrow">KEEP EXPLORING</p><h2>Another good read.</h2><div class="article-grid">${related.map(card).join('')}</div></section>` : ''}`;
@@ -134,12 +137,12 @@ export async function build(output = path.join(root, 'dist')) {
     await writeFile(path.join(directory, 'index.html'), page({ title: `${article.title} | ${site.name}`, description: article.summary, route: article.url, content, article, keywords: [article.seo, article.category, ...article.tags].filter(Boolean).join(', ') }));
   }
   await writeFile(path.join(output, '404.html'), page({ title: `Page not found | ${site.name}`, content: '<section class="page-intro wrap narrow"><p class="eyebrow">404 - A LITTLE OFF THE PATH</p><h1>This page is<br><em>still unwritten.</em></h1><p class="page-description">The story you are looking for may have moved or no longer exists.</p><a class="button" href="/">Back to the journal &#8599;</a></section>' }));
-  const entries = [{ route: '/' }, { route: '/categories.html' }, { route: '/about.html' }, { route: '/contact.html' }, ...articles.map((article) => ({ route: article.url, date: article.date }))];
+  const entries = [{ route: '/' }, { route: '/categories.html' }, { route: '/about.html' }, { route: '/contact.html' }, { route: '/focus.html' }, ...articles.map((article) => ({ route: article.url, date: article.date }))];
   await writeFile(path.join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.map(({ route, date }) => `  <url><loc>${escapeHtml(site.url + route)}</loc>${date ? `<lastmod>${date}</lastmod>` : ''}</url>`).join('\n')}\n</urlset>\n`);
   await writeFile(path.join(output, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`);
   const searchData = articles.map(({ slug, title, summary, category, author, tags, seo, content }) => ({ slug, title, summary, category, author, tags, seo, content }));
   await writeFile(path.join(output, 'main.js'), `const articles = ${jsonForHtml(searchData)};\n${script}`);
-  await Promise.all([['style.css'], ['images', 'favicon.svg'], ['images', 'journal-art.svg']].map((parts) => copyFile(path.join(root, ...parts), path.join(output, ...parts))));
+  await Promise.all([['style.css'], ['focus-timer.js'], ['images', 'favicon.svg'], ['images', 'journal-art.svg']].map((parts) => copyFile(path.join(root, ...parts), path.join(output, ...parts))));
   return { articles: articles.length, output };
 }
 

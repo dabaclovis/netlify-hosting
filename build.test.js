@@ -58,8 +58,36 @@ test('builds crawlable article pages, matching sitemap, metadata and local searc
     assert.ok(!logo.includes('<text'));
     assert.ok(home.indexOf('class="hero-visual"') < home.indexOf('class="hero-copy"'));
     assert.ok(robots.includes(`${site.url}/sitemap.xml`));
-    assert.equal((sitemap.match(/<url>/g) || []).length, articles.length + 4);
+    assert.equal((sitemap.match(/<url>/g) || []).length, articles.length + 5);
+    const focusPage = await readFile(path.join(output, 'focus.html'), 'utf8');
+    assert.match(focusPage, /href="\/focus.html" aria-current="page"/);
+    assert.match(focusPage, /role="timer" aria-label="Time remaining" aria-live="off"/);
+    assert.match(focusPage, /<script type="module" src="\/focus-timer.js"><\/script>/);
+    assert.match(focusPage, /<noscript>/);
+    assert.ok(focusPage.includes(`href="${site.url}/focus.html"`));
+    assert.ok(sitemap.includes(`${site.url}/focus.html`));
+    assert.ok(home.includes('Try the focus timer'));
+    assert.equal(await readFile(path.join(output, 'focus-timer.js'), 'utf8'), await readFile(new URL('./focus-timer.js', import.meta.url), 'utf8'));
     const categoryPage = await readFile(path.join(output, 'categories.html'), 'utf8');
+    const contactPage = await readFile(path.join(output, 'contact.html'), 'utf8');
+    assert.match(contactPage, /<form class="review-form" name="client-review" method="POST" data-netlify="true" netlify-honeypot="bot-field" aria-labelledby="review-heading" aria-describedby="review-privacy review-instructions">/);
+    assert.match(contactPage, /<input type="hidden" name="form-name" value="client-review">/);
+    assert.match(contactPage, /<p hidden>\s*<label>Leave this field empty: <input name="bot-field" type="text" tabindex="-1" autocomplete="off"><\/label>\s*<\/p>/);
+    for (const id of ['name', 'rating', 'message']) {
+      assert.match(contactPage, new RegExp(`<label for="review-${id}">`));
+      assert.match(contactPage, new RegExp(`<(?:input|select|textarea) id="review-${id}"[^>]*\\brequired>`));
+    }
+    assert.doesNotMatch(contactPage, /<input id="review-email"[^>]*\brequired/);
+    assert.match(contactPage, /<option value="" selected disabled>Select a rating<\/option>/);
+    for (const rating of [1, 2, 3, 4, 5]) {
+      assert.match(contactPage, new RegExp(`<option value="${rating}">`));
+    }
+    assert.match(contactPage, /<textarea[^>]*name="review"[^>]*maxlength="2000"[^>]*placeholder="[^"]+"[^>]*required>/);
+    assert.match(contactPage, /<button class="button" type="submit">/);
+    assert.doesNotMatch(contactPage, /mailto:|appdeveloper25@yahoo\.com/);
+    for (const field of ['name', 'email', 'rating', 'review']) {
+      assert.match(contactPage, new RegExp(`name="${field}"`));
+    }
     const categories = normalizeCategories(JSON.parse(await readFile(new URL('./category.json', import.meta.url), 'utf8')), articles);
     for (const category of categories) {
       const count = articles.filter((article) => article.category === category).length;
@@ -84,7 +112,7 @@ test('builds crawlable article pages, matching sitemap, metadata and local searc
       assert.equal(jsonLd.mainEntityOfPage, site.url + article.url);
       assert.ok(script.includes(JSON.stringify(article.slug)));
     }
-    for (const file of ['categories.html', 'about.html', 'contact.html', '404.html']) {
+    for (const file of ['categories.html', 'about.html', 'contact.html', 'focus.html', '404.html']) {
       assert.ok(!(await readFile(path.join(output, file), 'utf8')).includes('{{'));
     }
   } finally {

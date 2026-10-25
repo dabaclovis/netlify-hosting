@@ -3,5 +3,44 @@
   <p class="eyebrow">LET'S CONNECT</p>
   <h1>Good stories start<br><em>with a hello.</em></h1>
   <p class="page-description">Have a question, an idea, or a story to share? We'd love to hear from you.</p>
-  {{contactDetails}}
+  <section class="review-section" aria-labelledby="review-heading">
+    <p class="eyebrow">CLIENT FEEDBACK</p>
+    <h2 id="review-heading">Leave a review</h2>
+    <p class="review-description" id="review-privacy">I'd love to hear about your experience working with me. Your review is sent privately and won't be published without your permission.</p>
+    <form class="review-form" name="client-review" method="POST" data-netlify="true" netlify-honeypot="bot-field" aria-labelledby="review-heading" aria-describedby="review-privacy review-instructions">
+      <input type="hidden" name="form-name" value="client-review">
+      <p hidden>
+        <label>Leave this field empty: <input name="bot-field" type="text" tabindex="-1" autocomplete="off"></label>
+      </p>
+      <p class="review-instructions" id="review-instructions">Name, rating, and review are required. Email is optional.</p>
+      <div class="review-fields">
+        <div class="form-field">
+          <label for="review-name">Name</label>
+          <input id="review-name" type="text" name="name" autocomplete="name" maxlength="100" placeholder="Your name" required>
+        </div>
+        <div class="form-field">
+          <label for="review-email">Email <span>(optional)</span></label>
+          <input id="review-email" type="email" name="email" autocomplete="email" maxlength="254" placeholder="you@example.com" aria-describedby="review-email-help">
+          <p class="form-help" id="review-email-help">Only include your email if you'd like a reply.</p>
+        </div>
+        <div class="form-field">
+          <label for="review-rating">Your rating</label>
+          <select id="review-rating" name="rating" required>
+            <option value="" selected disabled>Select a rating</option>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Very good</option>
+            <option value="3">3 - Good</option>
+            <option value="2">2 - Fair</option>
+            <option value="1">1 - Poor</option>
+          </select>
+        </div>
+        <div class="form-field form-field-wide">
+          <label for="review-message">Your review</label>
+          <textarea id="review-message" name="review" rows="6" maxlength="2000" placeholder="Share a few words about your experience..." aria-describedby="review-message-help" required></textarea>
+          <p class="form-help" id="review-message-help">Up to 2,000 characters. Please don't include sensitive information.</p>
+        </div>
+      </div>
+      <button class="button" type="submit">Send your review <span aria-hidden="true">&#8594;</span></button>
+    </form>
+  </section>
 </section>

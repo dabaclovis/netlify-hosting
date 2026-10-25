@@ -20,7 +20,7 @@ The root `index.html` is a build template, not a directly viewable page. Literal
 
 ## Publish
 
-1. Update [site.json](site.json): set `name`, `description`, `about`, `language`, and especially `url` to your real HTTPS domain (origin only, no subdirectory). Set `email` to enable the contact email link, or leave it empty to show an honest unavailable message.
+1. Update [site.json](site.json): set `name`, `description`, `about`, `language`, and especially `url` to your real HTTPS domain (origin only, no subdirectory). The `email` setting is retained for configuration compatibility but is not displayed on the Contact page.
 2. Run `npm run build`.
 3. Deploy the **contents** of the generated `dist` directory to any static host. Enable directory index pages and use `404.html` as the not-found page. This site expects deployment at the domain root.
 4. Submit `https://your-domain.com/sitemap.xml` to your search engine's webmaster tools.
@@ -34,9 +34,10 @@ Prepared target: [dabaclovis/netlify-hosting](https://github.com/dabaclovis/netl
 1. Put this project's source files at the repository root on `master`. Upload/commit all required source files, including `articles.json`, `category.json`, `site.json`, templates, images, JavaScript, package metadata, tests, agent files, and `netlify.toml`. Do not commit `dist`, credentials, or dependencies. This preparation does not initialize Git or push anything.
 2. In Netlify, import an existing project from GitHub, grant access to that repository, and select `master` as the production branch. Leave the base directory at the repository root.
 3. [netlify.toml](netlify.toml) specifies Node.js 22, build command `npm test && npm run build`, and publish directory `dist`. Netlify serves the generated static site; do not run `server.js` in production. The build copies image assets using platform-native paths so it works on Netlify's Linux runners.
-4. Add `articles.brotherfall.com` in Netlify's domain settings. Follow Netlify's displayed DNS instructions at your DNS provider and wait for HTTPS provisioning. `site.json` already uses this HTTPS domain for canonical URLs, structured data, robots, and sitemap.
-5. Enable automatic production builds for pushes to `master`. Test the first deployment, `/categories.html`, an article URL such as `/articles/sample-article/`, `/sitemap.xml`, and an unknown URL (which should return the custom 404).
-6. Once connected, each successful article push triggers Netlify to test, build, and publish the updated articles and sitemap. Failed builds do not publish the new article; inspect Netlify's deploy logs.
+4. The Contact page includes a Netlify-hosted `client-review` form. Enable automatic form detection under **Forms** in the Netlify project dashboard, then redeploy so Netlify can detect the generated HTML. The form uses a native POST, a hidden `form-name`, and a `bot-field` honeypot for spam filtering; no JavaScript, API key, or custom backend is needed. Name, rating (1-5), and review (up to 2,000 characters) are required by browser validation; email is optional. Netlify shows its default confirmation page after submission. View submissions under **Forms**, check the spam list if needed, and configure submission notifications there. Reviews are private and are not displayed on the website. Local previews and other static hosts do not process submissions; verify one real submission after deploying to Netlify.
+5. Add `articles.brotherfall.com` in Netlify's domain settings. Follow Netlify's displayed DNS instructions at your DNS provider and wait for HTTPS provisioning. `site.json` already uses this HTTPS domain for canonical URLs, structured data, robots, and sitemap.
+6. Enable automatic production builds for pushes to `master`. Test the first deployment, `/categories.html`, an article URL such as `/articles/sample-article/`, `/contact.html`, `/sitemap.xml`, and an unknown URL (which should return the custom 404).
+7. Once connected, each successful article push triggers Netlify to test, build, and publish the updated articles and sitemap. Failed builds do not publish the new article; inspect Netlify's deploy logs.
 
 For agent publishing, separately configure this local folder as the repository checkout, authenticate Git, set `origin` to the exact repository above, and check out `master`. Begin from a clean checkout synchronized with `origin/master`. Initial repository setup and first push are manual prerequisites, not actions performed by the article agent.
 
@@ -77,6 +78,18 @@ Content is **plain text**, not HTML or Markdown. Blank lines separate paragraphs
 - `sitemap.xml` includes all articles and main pages. `robots.txt` advertises it. Meta keywords are included for compatibility, but modern search engines primarily use the visible content, descriptions, and structured data; indexing is not guaranteed.
 - The browser search index is bundled locally into generated JavaScript; no API or database is required. All published article content is public.
 - [about.html](about.html) and [contact.html](contact.html) are content templates; [index.html](index.html) is the shared page shell. Generated files in `dist` should not be manually edited.
+
+## Free focus timer
+
+The `/focus.html` page provides a free, browser-only focus and break timer, linked from the homepage, main navigation, footer, and sitemap. Defaults are 25 minutes of focus and a 5-minute break. Visitors can choose whole-minute lengths (focus 1-120, break 1-60), start, pause, resume, reset, and see completed focus sessions for the current visit. Changing the session type or applying lengths resets the current countdown; settings and mode switches are disabled while running.
+
+The timer uses a wall-clock deadline rather than counting interval callbacks, so delayed background updates catch up on the next update. Sessions do not auto-start. Browsers can suspend background pages and sleeping devices, so it is not a dependable alarm. No sound, notifications, accounts, storage, tracking, external APIs, or backend services are used. Reloading/closing the page resets the timer and count. JavaScript is required for the interactive timer; explanatory content remains readable without it.
+
+Edit [focus.html](focus.html) and [focus-timer.js](focus-timer.js), not generated files. The existing Netlify build publishes the page and script with the rest of the static site.
+
+### Research behind the service
+
+The initial web research compared writing tools, study cards, and timers; the site owner chose a focus timer. [Pomofocus](https://pomofocus.io/) is an existing example of a browser-based focus/break timer. The [Pomodoro Technique](https://www.pomodorotechnique.com/) is the inspiration, not an affiliation or a guarantee of productivity. A useful tool can give visitors a reason to return, but traffic, rankings, and retention are not guaranteed.
 
 ## Validate
 

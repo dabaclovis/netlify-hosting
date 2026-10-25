@@ -1,0 +1,57 @@
+<section class="page-intro wrap narrow">
+  <a class="back-link" href="/">&#8592; Back to the journal</a>
+  <p class="eyebrow">A LITTLE SPACE TO FOCUS</p>
+  <h1>One task.<br><em>One quiet moment.</em></h1>
+  <p class="page-description">A free focus timer for reading, studying, writing, or getting started. No sign-up. No ads. Just a little structure for your time.</p>
+  <section class="focus-tool" aria-labelledby="timer-heading" id="focus-tool">
+    <h2 id="timer-heading">Your focus timer</h2>
+    <noscript><p class="notice">Enable JavaScript to use the timer. The instructions below still work without it.</p></noscript>
+    <div id="timer-controls" hidden>
+      <div class="timer-modes" role="group" aria-label="Session type">
+        <button class="filter active" type="button" data-mode="focus" aria-pressed="true">Focus</button>
+        <button class="filter" type="button" data-mode="break" aria-pressed="false">Break</button>
+      </div>
+      <p class="timer-phase" id="timer-phase">Focus session</p>
+      <div class="timer-clock" id="timer-clock" role="timer" aria-label="Time remaining" aria-live="off">25:00</div>
+      <progress class="timer-progress" id="timer-progress" max="1500" value="0" aria-label="Session progress"></progress>
+      <div class="timer-actions">
+        <button class="button" id="timer-toggle" type="button">Start focus</button>
+        <button class="timer-reset" id="timer-reset" type="button">Reset timer</button>
+      </div>
+      <p class="timer-status" id="timer-status" role="status">Ready when you are.</p>
+      <p class="timer-sessions">Completed focus sessions this visit: <strong id="timer-sessions">0</strong></p>
+      <form class="timer-settings" id="timer-settings">
+        <fieldset>
+          <legend>Make it your own</legend>
+          <div class="review-fields">
+            <div class="form-field">
+              <label for="focus-minutes">Focus (minutes)</label>
+              <input type="number" id="focus-minutes" name="focus" min="1" max="120" step="1" value="25" required>
+            </div>
+            <div class="form-field">
+              <label for="break-minutes">Break (minutes)</label>
+              <input type="number" id="break-minutes" name="break" min="1" max="60" step="1" value="5" required>
+            </div>
+          </div>
+          <button class="timer-reset" type="submit">Apply lengths &amp; reset timer</button>
+        </fieldset>
+      </form>
+    </div>
+    <p class="form-help">Keep this tab open. Reloading or closing it resets your timer and session count. Nothing is saved or sent to a server.</p>
+  </section>
+  <section class="timer-guide" aria-labelledby="timer-guide-heading">
+    <p class="eyebrow">SMALL STEPS, LESS FRICTION</p>
+    <h2 id="timer-guide-heading">How to use it</h2>
+    <ol>
+      <li>Choose one task and clear away distractions.</li>
+      <li>Start a focus session. Try 25 minutes, or choose a length that suits you.</li>
+      <li>When the session ends, select Break and start it. Stretch, rest your eyes, or get some water.</li>
+      <li>Return for another focus session when you're ready. After several rounds, consider a longer rest.</li>
+    </ol>
+    <p>Sessions never start automatically. You decide when to continue. The remaining time also appears in the browser tab title while the timer runs.</p>
+    <p>Browsers may delay updates in background tabs or while your device sleeps. The timer catches up when the page runs again, but it isn't an alarm: keep an eye on it for time-sensitive tasks.</p>
+    <p>This tool takes inspiration from the <a href="https://www.pomodorotechnique.com/">Pomodoro Technique</a>, which alternates focused work with breaks. It's an independent tool, not affiliated with or endorsed by its creator.</p>
+    <a class="button" href="/#journal">Find something to read <span aria-hidden="true">&#8599;</span></a>
+  </section>
+</section>
+<script type="module" src="/focus-timer.js"></script>
