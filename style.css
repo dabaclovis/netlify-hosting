@@ -57,6 +57,12 @@ h2{font-family:var(--serif);font-size:38px;line-height:1.2;font-weight:normal;le
 .results-line p{font-size:11px;color:var(--muted);margin:0}
 .results-line>span{font-size:8px;letter-spacing:1.3px;color:#909483}
 .article-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:25px}
+.pagination{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:7px;margin:32px auto 10px}
+.pagination-button{min-width:38px;min-height:38px;padding:8px 11px;border:1px solid var(--line);border-radius:4px;background:#fafaf5;color:var(--green);font-size:11px}
+.pagination-button:hover:not(:disabled){border-color:#9eaa92;background:#eeeee6}
+.pagination-button[aria-current="page"]{border-color:var(--green);background:var(--green);color:#fff}
+.pagination-button:disabled{cursor:default;opacity:.5}
+.pagination-ellipsis{padding-inline:3px;color:var(--muted);font-size:12px}
 .article-card{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fafaf5;transition:box-shadow .2s,transform .2s}
 .article-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px #2536240b}
 .card-art{display:block;position:relative;overflow:hidden;min-height:240px;background:#dce2cc}

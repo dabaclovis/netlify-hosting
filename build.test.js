@@ -52,6 +52,9 @@ test('builds crawlable article pages, matching sitemap, metadata and local searc
     assert.equal(result.articles, articles.length);
     assert.match(home, /role="search"/);
     assert.match(home, /aria-live="polite"/);
+    assert.match(home, /<nav class="pagination" id="pagination" aria-label="Journal pages" hidden><\/nav>/);
+    assert.match(script, /const pageSize = 15;/);
+    assert.match(script, /url\.searchParams\.set\('page', String\(currentPage\)\)/);
     assert.match(home, /<img class="brand-icon" src="\/images\/favicon\.svg" alt="" width="40" height="40">/);
     const logo = await readFile(path.join(output, 'images', 'favicon.svg'), 'utf8');
     assert.match(logo, /viewBox="0 0 64 64"/);

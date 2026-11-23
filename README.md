@@ -72,7 +72,7 @@ Content is **plain text**, not HTML or Markdown. Blank lines separate paragraphs
 - [category.json](category.json) is the category source of truth: a JSON array of unique names, displayed in file order. The Categories page at `/categories.html` shows each category's total article count, including zero-count categories, with combined category/search filters and shareable URLs. Names must match article categories exactly; unknown article categories fail the build. The sample category is retained for the existing sample article and can be removed once that article is recategorized or removed.
 
 - Live, accent-insensitive search covers title, summary, category, tags, author, `seo`, and full article content. All words must match; category filters combine with search.
-- Search/filter state is shareable in the URL (`?q=ideas&category=Discoveries`).
+- The homepage shows 15 matching articles per page. Centered pagination works with search and category filters, and the current page is shareable in the URL (`?q=ideas&category=Discoveries&page=2`).
 - Every article has a pre-rendered, directly accessible URL under `/articles/<slug>/`; content and links work without JavaScript.
 - Pages include title/description, canonical URLs, keyword metadata, Open Graph and Twitter tags. Articles include author, publication date, tags, and `BlogPosting` JSON-LD.
 - `sitemap.xml` includes all articles and main pages. `robots.txt` advertises it. Meta keywords are included for compatibility, but modern search engines primarily use the visible content, descriptions, and structured data; indexing is not guaranteed.
